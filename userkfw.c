@@ -181,55 +181,59 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-    while ((opt = getopt(argc, argv, "a:r:p:d:l")) != -1) {
-        switch (opt) {
-            case 'a': // Add IP
-                memset(&msg_data, 0, sizeof(msg_data));
-                msg_data.msg_type = MSG_ADD_IP;
-                if (parse_ip_mask(optarg, &msg_data.data.ip.addr, 
-                                &msg_data.data.ip.mask) < 0)
-                    return 1;
-                send_to_kernel(&msg_data);
-                printf("Added IP rule\n");
-                break;
+    while ((opt = getopt(argc, argv, "a:r:p:d:l")) != -1) 
+    {
+      switch (opt) 
+      {
+        case 'a': // Add IP
+          memset(&msg_data, 0, sizeof(msg_data));
+          msg_data.msg_type = MSG_ADD_IP;
+          if (parse_ip_mask(optarg, &msg_data.data.ip.addr, &msg_data.data.ip.mask) < 0)
+          {
+            return 1;
+          }
+          send_to_kernel(&msg_data);
+          printf("Added IP rule\n");
+          break;
 
-            case 'r': // Remove IP
-                memset(&msg_data, 0, sizeof(msg_data));
-                msg_data.msg_type = MSG_REM_IP;
-                if (inet_pton(AF_INET, optarg, &msg_data.data.ip.addr) != 1) {
-                    fprintf(stderr, "Invalid IP address format\n");
-                    return 1;
-                }
-                send_to_kernel(&msg_data);
-                printf("Removed IP rule\n");
-                break;
+        case 'r': // Remove IP
+          memset(&msg_data, 0, sizeof(msg_data));
+          msg_data.msg_type = MSG_REM_IP;
+          if (inet_pton(AF_INET, optarg, &msg_data.data.ip.addr) != 1) 
+          {
+            fprintf(stderr, "Invalid IP address format\n");
+            return 1;
+          }
+          send_to_kernel(&msg_data);
+          printf("Removed IP rule\n");
+          break;
 
-            case 'p': // Add protocol
-                memset(&msg_data, 0, sizeof(msg_data));
-                msg_data.msg_type = MSG_ADD_PROTO;
-                msg_data.data.proto = (unsigned char)atoi(optarg);
-                send_to_kernel(&msg_data);
-                printf("Added protocol rule\n");
-                break;
+        case 'p': // Add protocol
+          memset(&msg_data, 0, sizeof(msg_data));
+          msg_data.msg_type = MSG_ADD_PROTO;
+          msg_data.data.proto = (unsigned char)atoi(optarg);
+          send_to_kernel(&msg_data);
+          printf("Added protocol rule\n");
+          break;
 
-            case 'd': // Remove protocol
-                memset(&msg_data, 0, sizeof(msg_data));
-                msg_data.msg_type = MSG_REM_PROTO;
-                msg_data.data.proto = (unsigned char)atoi(optarg);
-                send_to_kernel(&msg_data);
-                printf("Removed protocol rule\n");
-                break;
+        case 'd': // Remove protocol
+          memset(&msg_data, 0, sizeof(msg_data));
+          msg_data.msg_type = MSG_REM_PROTO;
+          msg_data.data.proto = (unsigned char)atoi(optarg);
+          send_to_kernel(&msg_data);
+          printf("Removed protocol rule\n");
+          break;
 
-            case 'l': // List rules
-                memset(&msg_data, 0, sizeof(msg_data));
-                msg_data.msg_type = MSG_LIST_RULES;
-                send_to_kernel(&msg_data);
-                receive_rules_list();
-                break;
+        case 'l': // List rules
+          memset(&msg_data, 0, sizeof(msg_data));
+          msg_data.msg_type = MSG_LIST_RULES;
+          send_to_kernel(&msg_data);
+          receive_rules_list();
+          break;
 
-            default:
-                print_usage();
-                return 1;
+        default:
+          print_usage();
+          return 1;
     }
   }
 
